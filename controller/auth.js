@@ -46,5 +46,33 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = async (req, res) => {
-  // Code ...
+  const { identifier, password } = req.body;
+
+  if (!identifier || !password) {
+    return res.json({ message: "fill out the fields" });
+  }
+
+  const user = await usersModel
+    .findOne({
+      $or: [
+        { username: identifier },
+        { phone: identifier },
+        { email: identifier },
+      ],
+    })
+    .lean();
+
+  if (!user) {
+    return res.json({ message: "invalid password or username" });
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
+    return res.json({ message: "invalid password or username" });
+  }
+
+  const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+  res.json(accessToken);
 };
