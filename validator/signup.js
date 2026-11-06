@@ -1,38 +1,31 @@
-const validator = require("fastest-validator");
-const v = new validator();
+const Validator = require("fastest-validator");
+const v = new Validator();
 
 const schema = {
-  role: {
-    type: "string",
-    required: true,
-  },
   username: {
     type: "string",
-    required: true,
+    min: 3,
+    max: 100,
   },
   fullname: {
     type: "string",
-    required: true,
+    min: 3,
+    max: 255,
   },
   phone: {
-    type: "number",
-    required: true,
+    type: "string",
     min: 10,
     max: 11,
   },
   email: {
-    type: "string",
-    required: true,
-  },
-  profile: {
-    type: "string",
-    required: false,
+    type: "email",
   },
   password: {
     type: "string",
-    required: true,
     min: 8,
+    max: 16,
   },
+  $$strict: true,
 };
 
 const check = v.compile(schema);

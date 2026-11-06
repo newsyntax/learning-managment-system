@@ -1,7 +1,11 @@
 const express = require("express");
 const app = express();
-const usersRouter = require("./router/user");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const authRouter = require("./router/auth");
 
-app.use("/api/user", usersRouter);
+app.use(cors());
+app.use(bodyParser.json());
+app.use("/api/auth", authRouter);
 
 module.exports = app;

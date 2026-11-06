@@ -3,6 +3,7 @@ const schema = mongoose.Schema({
   role: {
     type: String,
     required: true,
+    default: "USER",
   },
   username: {
     type: String,
@@ -13,7 +14,7 @@ const schema = mongoose.Schema({
     required: true,
   },
   phone: {
-    type: Number,
+    type: String,
     required: true,
   },
   email: {
@@ -22,12 +23,11 @@ const schema = mongoose.Schema({
   },
   profile: {
     type: String,
-    required: false,
+    default: "",
   },
   password: {
     type: String,
     required: true,
-    min: 8,
   },
 });
 
