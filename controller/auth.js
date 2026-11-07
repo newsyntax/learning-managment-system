@@ -54,13 +54,13 @@ exports.signin = async (req, res) => {
     })
     .lean();
 
+  if (!user) {
+    return res.json({ message: "no such user" });
+  }
+
   const isUserBanned = await banUsersModel.findOne({ userID: user._id });
   if (isUserBanned) {
     return res.json({ message: "your account is banned" });
-  }
-
-  if (!user) {
-    return res.json({ message: "invalid password or username" });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);

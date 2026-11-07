@@ -3,6 +3,20 @@ const banUsersModel = require("../model/ban-user");
 const bcrypt = require("bcrypt");
 const { default: mongoose } = require("mongoose");
 
+exports.getUserInfoByItsOwn = async (req, res) => {
+  const user = req.user;
+
+  if (user.role === "USER") {
+    Reflect.deleteProperty(user, "role");
+    return res.json(user);
+  }
+
+  res.json(user);
+};
+
+exports.updateUserInfoByItsOwn = async (req, res) => {
+  // Code ...
+};
 exports.create = async (req, res) => {
   const { username, fullname, phone, email, password, role } = req.body;
   const isUserExists = await usersModel.findOne({
