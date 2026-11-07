@@ -1,6 +1,7 @@
 const usersModel = require("../model/user");
 const banUsersModel = require("../model/ban-user");
 const bcrypt = require("bcrypt");
+const { default: mongoose } = require("mongoose");
 
 exports.create = async (req, res) => {
   const { username, fullname, phone, email, password, role } = req.body;
@@ -43,8 +44,13 @@ exports.delete = async (req, res) => {
 
 exports.banUser = async (req, res) => {
   const { id } = req.params;
+  const isValidID = mongoose.isValidObjectId(id);
+
+  if (!isValidID) {
+    return res.json({ message: "invalid ID" });
+  }
   const isUserExists = await usersModel.findOne({ _id: id }).lean();
-  const isUserBannedBefore = await banUsersModel.findOne({ _id: id }).lean();
+  const isUserBannedBefore = await banUsersModel.findOne({ userID: id }).lean();
 
   if (!isUserExists) {
     return res.json({ message: "no such user" });
@@ -59,5 +65,6 @@ exports.banUser = async (req, res) => {
 };
 
 exports.unBanUser = async (req, res) => {
-  // Code ...
+  const { id } = req.params;
+  // const isUser;
 };
