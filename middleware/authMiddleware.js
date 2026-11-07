@@ -17,7 +17,6 @@ module.exports = async (req, res, next) => {
     const mainUser = user.toObject();
     Reflect.deleteProperty(mainUser, "password");
     req.user = mainUser;
-    console.log(req.user);
     next();
   } catch (error) {
     return res.json(error);

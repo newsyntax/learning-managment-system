@@ -1,5 +1,5 @@
 const usersModel = require("../model/user");
-// const bannedUsersModelModel = require("../model/bann-user");
+// const banUsersModel = require("../model/ban-user");
 const validator = require("../validator/signup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -72,13 +72,9 @@ exports.signin = async (req, res) => {
     return res.json({ message: "invalid password or username" });
   }
 
-<<<<<<< HEAD
   const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: "30d",
   });
-=======
-  const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
->>>>>>> 8020f5c50ee02857c164d59cb99fb76c6539398e
 
   res.json(accessToken);
 };
