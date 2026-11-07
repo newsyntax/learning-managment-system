@@ -16,6 +16,10 @@ router
   .delete(authMiddleware, isAdminMiddleware, controller.delete);
 
 router
+  .route("/:id/upgrade")
+  .put(authMiddleware, isAdminMiddleware, controller.upgrade);
+
+router
   .route("/:id/ban")
   .post(authMiddleware, isAdminMiddleware, controller.banUser)
   .delete(authMiddleware, isAdminMiddleware, controller.unBanUser);

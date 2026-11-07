@@ -37,7 +37,7 @@ exports.getOneUser = async (req, res) => {
   if (!isValidID) {
     return res.json({ message: "invalid ID" });
   }
-  const user = await usersModel.findOne({ _id: id });
+  const user = await usersModel.findOne({ _id: id }).select("-password");
 
   if (!user) {
     return res.json({ message: "no such user" });
@@ -52,6 +52,38 @@ exports.getOneUser = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
+  const { id } = req.params;
+  const isValidID = mongoose.isValidObjectId(id);
+  if (!isValidID) {
+    return res.json({ message: "invalid ID" });
+  }
+
+  const isUserExists = await usersModel.findOne({ _id: id }).lean();
+  if (!isUserExists) {
+    return res.json({ message: "no such user" });
+  }
+
+  const isUserBanned = await banUsersModel.findOne({
+    userID: isUserExists._id,
+  });
+  if (isUserBanned) {
+    return res.json({
+      message: "opration faild ,this user is banned",
+      user: isUserExists,
+    });
+  }
+  const { username, fullname, phone, email, password, role, profile } =
+    req.body;
+
+  await usersModel.updateOne(
+    { _id: id },
+    { username, fullname, phone, email, password, role, profile },
+  );
+
+  res.json({ message: `${isUserExists.fullname} is updated` });
+};
+
+exports.upgrade = async (req, res) => {
   // Code ...
 };
 
