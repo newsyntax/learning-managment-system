@@ -84,7 +84,37 @@ exports.update = async (req, res) => {
 };
 
 exports.upgrade = async (req, res) => {
-  // Code ...
+  const { id } = req.params;
+  const isValidID = mongoose.isValidObjectId(id);
+  if (!isValidID) {
+    return res.json({ message: "invalid ID" });
+  }
+
+  const isUserExists = await usersModel.findOne({ _id: id }).lean();
+  if (!isUserExists) {
+    return res.json({ message: "no such user" });
+  }
+
+  const isUserBanned = await banUsersModel.findOne({
+    userID: isUserExists._id,
+  });
+  if (isUserBanned) {
+    return res.json({
+      message: "opration faild ,this user is banned",
+      user: isUserExists,
+    });
+  }
+
+  const { role } = req.body;
+
+  if (isUserExists.role === role) {
+    return res.json({ message: `user is upgrade to ${role} before` });
+  }
+
+  await usersModel.updateOne({ _id: id }, { role });
+  return res.json({
+    message: `${isUserExists.fullname} upgraded to ${role}`,
+  });
 };
 
 exports.delete = async (req, res) => {
