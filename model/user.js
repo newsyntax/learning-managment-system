@@ -4,6 +4,7 @@ const schema = mongoose.Schema({
     type: String,
     required: true,
     default: "USER",
+    enum: ["USER", "ADMIN", "TEACHER", "AUTHOR"],
   },
   username: {
     type: String,
