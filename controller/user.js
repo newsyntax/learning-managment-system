@@ -32,7 +32,23 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getOneUser = async (req, res) => {
-  // Code ...
+  const { id } = req.params;
+  const isValidID = mongoose.isValidObjectId(id);
+  if (!isValidID) {
+    return res.json({ message: "invalid ID" });
+  }
+  const user = await usersModel.findOne({ _id: id });
+
+  if (!user) {
+    return res.json({ message: "no such user" });
+  }
+
+  const isUserBanned = await banUsersModel.find({ userID: user._id });
+  if (isUserBanned) {
+    return res.json({ message: "this user is banned", user });
+  }
+
+  res.json(user);
 };
 
 exports.update = async (req, res) => {
