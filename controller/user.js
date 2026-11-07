@@ -118,7 +118,19 @@ exports.upgrade = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  // Code ...
+  const { id } = req.params;
+  const isValidID = mongoose.isValidObjectId(id);
+  if (!isValidID) {
+    return res.json({ message: "invalid ID" });
+  }
+
+  const isUserExists = await usersModel.findOne({ _id: id }).lean();
+  if (!isUserExists) {
+    return res.json({ message: "no such user" });
+  }
+
+  await usersModel.deleteOne({ _id: id });
+  res.json({ message: `${isUserExists.fullname} removed` });
 };
 
 exports.banUser = async (req, res) => {
