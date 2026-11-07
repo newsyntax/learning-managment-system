@@ -5,6 +5,11 @@ const controller = require("../controller/user");
 const router = express.Router();
 
 router
+  .route("/user")
+  .get(authMiddleware, controller.getUserInfoByItsOwn)
+  .put(authMiddleware, controller.updateUserInfoByItsOwn);
+
+router
   .route("/")
   .get(authMiddleware, isAdminMiddleware, controller.getAllUsers)
   .post(authMiddleware, isAdminMiddleware, controller.create);
