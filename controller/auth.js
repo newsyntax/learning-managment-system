@@ -1,5 +1,5 @@
 const usersModel = require("../model/user");
-// const banUsersModel = require("../model/ban-user");
+const banUsersModel = require("../model/ban-user");
 const validator = require("../validator/signup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -61,6 +61,11 @@ exports.signin = async (req, res) => {
       ],
     })
     .lean();
+
+  const isUserBanned = await banUsersModel.findOne({ userID: user._id });
+  if (isUserBanned) {
+    return res.json({ message: "your account is banned" });
+  }
 
   if (!user) {
     return res.json({ message: "invalid password or username" });
