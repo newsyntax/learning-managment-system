@@ -66,5 +66,21 @@ exports.banUser = async (req, res) => {
 
 exports.unBanUser = async (req, res) => {
   const { id } = req.params;
-  // const isUser;
+  const isValidID = mongoose.isValidObjectId(id);
+
+  if (!isValidID) {
+    return res.json({ message: "invalid ID" });
+  }
+  const isUserExists = await usersModel.findOne({ _id: id }).lean();
+
+  if (!isUserExists) {
+    return res.json({ message: "no such user" });
+  }
+  const isUserBanned = await banUsersModel.findOne({ userID: id }).lean();
+  if (!isUserBanned) {
+    return res.json({ message: "user is not banned" });
+  }
+
+  await banUsersModel.deleteOne({ userID: id });
+  res.json({ message: "user unBaneed" });
 };
