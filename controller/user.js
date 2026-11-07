@@ -42,7 +42,20 @@ exports.delete = async (req, res) => {
 };
 
 exports.banUser = async (req, res) => {
-  // Code ...
+  const { id } = req.params;
+  const isUserExists = await usersModel.findOne({ _id: id }).lean();
+  const isUserBannedBefore = await banUsersModel.findOne({ _id: id }).lean();
+
+  if (!isUserExists) {
+    return res.json({ message: "no such user" });
+  }
+
+  if (isUserBannedBefore) {
+    return res.json({ message: "user banned before" });
+  }
+
+  await banUsersModel.create({ userID: id });
+  res.status(201).json({ message: "user banned" });
 };
 
 exports.unBanUser = async (req, res) => {
