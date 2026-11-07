@@ -15,7 +15,25 @@ exports.getUserInfoByItsOwn = async (req, res) => {
 };
 
 exports.updateUserInfoByItsOwn = async (req, res) => {
-  // Code ...
+  const { username, email, profile, oldPassword, newPassword } = req.body;
+  const user = await usersModel.findOne({ _id: req.user._id }).lean();
+
+  if (oldPassword && newPassword) {
+    const isOldPassword = await bcrypt.compare(oldPassword, user.password);
+    if (isOldPassword) {
+      const hash = await bcrypt.hash(newPassword, 8);
+      await usersModel.updateOne({ _id: req.user._id }, { password: hash });
+      return res.json({ message: "your password is upgraded" });
+    } else {
+      return res.json({ message: "invalid password" });
+    }
+  }
+
+  await usersModel.updateOne(
+    { _id: req.user._id },
+    { username, email, profile },
+  );
+  res.json({ message: "your info is updated" });
 };
 exports.create = async (req, res) => {
   const { username, fullname, phone, email, password, role } = req.body;
