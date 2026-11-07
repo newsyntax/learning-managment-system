@@ -20,14 +20,6 @@ exports.signup = async (req, res) => {
     return res.status(409).json({ message: "user already exists" });
   }
 
-  // const isBanned = await bannedUsersModel.findOne({
-  //   $or: [{ username: username }, { email: email }, { phone: phone }],
-  // });
-
-  // if (isBanned) {
-  //   return res.status(403).json({ message: "user have banned, access denied" });
-  // }
-
   const hashedPassword = await bcrypt.hash(password, 8);
 
   const user = await usersModel.create({

@@ -27,7 +27,8 @@ exports.create = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-  // Code ...
+  const users = await usersModel.find({}).select("-password").lean();
+  res.json(users);
 };
 
 exports.getOneUser = async (req, res) => {
